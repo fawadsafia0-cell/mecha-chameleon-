@@ -6,6 +6,13 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>MECHA CHAMELEON — Sensor Sweep</title>
+    <meta name="theme-color" content="#3ec93a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chameleon">
+    <link id="manifestLink" rel="manifest">
+    <link id="appIcon" rel="apple-touch-icon">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#3ec93a">
     <link rel="icon" type="image/png" href="favicon.png">
@@ -16,25 +23,6 @@
     <link rel="launcher-icon" href="icon-144.png">
     <link rel="launcher-icon" href="icon-192.png">
     <link rel="launcher-icon" href="icon-512.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preload" href="style.css" as="style">
-    <script src="lib/three.min.js"></script>
-    <script src="lib/three-canvasrenderer.js"></script>
-    <script src="lib/three-orbitcontrols.js"></script>
-    <script src="lib/three-gltfloader.js"></script>
-    <script src="lib/three-gltfexporter.js"></script>
-    <script src="lib/three-meshline.js"></script>
-    <link rel="preload" href="lib/three-meshline.js" as="script">
-    <script src="lib/three-meshline.js"></script>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3ec93a">
-    <link   rel="preload" href="lib/three-meshline.js" as="script">
-    <link rel="ss" href="ss.png" as="image">
-
-
-    <script src="lib/three-meshline.js"></script>\<script>navigator.serviceWorker.register("service-worker.js")</script>
-    
-
     <style>
         :root {
             --green: #3ec93a;
@@ -1334,6 +1322,313 @@
             box-shadow: var(--pop);
         }
 
+        /* ============ touch build ============ */
+        body.tp {
+            font-size: 15px;
+        }
+
+        body.tp .wrap {
+            padding: 16px 12px 120px;
+        }
+
+        body.tp .titlebar {
+            padding: 14px 16px;
+            border-radius: 16px;
+        }
+
+        body.tp h1 {
+            font-size: clamp(26px, 8vw, 40px);
+        }
+
+        body.tp .sysline {
+            font-size: 10px;
+        }
+
+        body.tp .plates {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        body.tp .plate canvas {
+            height: 78px;
+        }
+
+        body.tp .plate .ds {
+            display: none;
+        }
+
+        body.tp .plate .nm {
+            font-size: 13px;
+        }
+
+        body.tp .chip {
+            flex: 1 1 100%;
+            padding: 12px 14px;
+        }
+
+        body.tp .briefgrid {
+            grid-template-columns: 1fr;
+        }
+
+        body.tp .btn {
+            padding: 15px 22px;
+            font-size: 15px;
+        }
+
+        /* the launch bar sticks to the thumb, not the bottom of a long page */
+        body.tp .launch {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            z-index: 25;
+            background: var(--green-dk);
+            border-top: 4px solid var(--ink);
+            padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+            gap: 10px;
+            justify-content: stretch;
+        }
+
+        body.tp .launch .btn {
+            flex: 1;
+            padding: 15px 10px;
+            font-size: 15px;
+        }
+
+        body.tp #launchNote {
+            display: none;
+        }
+
+        /* HUD shrinks and hugs the safe area */
+        body.tp .hudTop {
+            top: calc(4px + env(safe-area-inset-top));
+            left: 4px;
+            right: 4px;
+            gap: 4px;
+        }
+
+        body.tp .cell {
+            padding: 5px 8px;
+            border-radius: 9px;
+            border-width: 2px;
+        }
+
+        body.tp .cell .k {
+            font-size: 8px;
+        }
+
+        body.tp .cell .v {
+            font-size: 14px;
+        }
+
+        body.tp .cell.grow {
+            display: none;
+        }
+
+        body.tp #minimap,
+        body.tp #minimap2 {
+            width: 92px;
+            height: 61px;
+        }
+
+        body.tp #susWrap {
+            top: calc(52px + env(safe-area-inset-top));
+            width: 70vw;
+        }
+
+        body.tp #toast {
+            top: auto;
+            bottom: calc(150px + env(safe-area-inset-bottom));
+            font-size: 12px;
+            padding: 8px 13px;
+        }
+
+        /* thumb pad: the actions you actually press mid-round */
+        #thumbPad {
+            position: absolute;
+            right: calc(6px + env(safe-area-inset-right));
+            bottom: calc(6px + env(safe-area-inset-bottom));
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+            pointer-events: auto;
+            z-index: 12;
+        }
+
+        body.tp.playing #thumbPad {
+            display: grid;
+        }
+
+        .tbtn {
+            width: 62px;
+            height: 56px;
+            border: 3px solid var(--ink);
+            border-radius: 14px;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: var(--face);
+            font-weight: 800;
+            font-size: 11px;
+            line-height: 1.15;
+            cursor: pointer;
+            box-shadow: 0 3px 0 var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0;
+        }
+
+        .tbtn:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 var(--ink);
+        }
+
+        .tbtn.on {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .tbtn.wide {
+            grid-column: span 3;
+            width: auto;
+            height: 48px;
+            background: var(--yellow);
+            font-size: 13px;
+        }
+
+        .tbtn b {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .tbtn.hide {
+            display: none;
+        }
+
+        body.tp .hbtns {
+            display: none;
+        }
+
+        body.tp .abilities {
+            display: none;
+        }
+
+        /* sheets take the bottom half, world stays visible above for the 2D Spoid */
+        body.tp .sheet {
+            max-height: 52vh;
+            padding: 10px 10px calc(14px + env(safe-area-inset-bottom));
+        }
+
+        body.tp .pcols {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        body.tp .pgroup {
+            padding: 10px;
+        }
+
+        body.tp #ppreview {
+            height: 122px;
+        }
+
+        body.tp #wheel {
+            width: 132px;
+            height: 132px;
+        }
+
+        body.tp .sw {
+            width: 44px;
+            height: 44px;
+        }
+
+        body.tp .matchBig {
+            font-size: 26px;
+        }
+
+        body.tp input[type=range] {
+            height: 30px;
+        }
+
+        body.tp .palette button {
+            width: 38px;
+            height: 38px;
+        }
+
+        body.tp .partBtn {
+            padding: 10px 6px;
+            font-size: 11px;
+        }
+
+        body.tp .poseGrid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        body.tp .poseBtn canvas {
+            height: 52px;
+        }
+
+        body.tp .poseBtn .pf {
+            display: none;
+        }
+
+        body.tp .sheetHead .t {
+            font-size: 12px;
+        }
+
+        /* handoff, sized for a hand */
+        body.tp #handoff .wrap {
+            padding: 20px 16px 30px;
+        }
+
+        body.tp .bigname {
+            font-size: clamp(30px, 11vw, 54px);
+        }
+
+        body.tp .roleTag {
+            font-size: 15px;
+            padding: 9px 16px;
+        }
+
+        body.tp .lookaway {
+            font-size: 14px;
+        }
+
+        body.tp #handoff .launch {
+            position: static;
+            background: none;
+            border: 0;
+            padding: 16px 0 0;
+        }
+
+        body.tp #handoff .launch .btn {
+            flex: 1 1 100%;
+        }
+
+        /* rotate nag only when portrait is genuinely too short to play */
+        #rotateNag {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 28px;
+            background: var(--green);
+        }
+
+        #rotateNag .bigname {
+            font-size: 30px;
+        }
+
+        body.tp.playing.squat #rotateNag {
+            display: flex;
+        }
+
         @media (max-width:760px) {
             .cell {
                 padding: 6px 9px;
@@ -1363,7 +1658,6 @@
                 transition: none !important;
             }
         }
-       
     </style>
 </head>
 
@@ -1410,6 +1704,24 @@
 
         <div id="toast"></div>
         <div id="stick"><i></i></div>
+    </div>
+
+    <div id="thumbPad">
+        <button class="tbtn" id="tbA"><b>&#9678;</b><span>Spoid</span></button>
+        <button class="tbtn" id="tbB"><b>&#9998;</b><span>Paint</span></button>
+        <button class="tbtn" id="tbC"><b>&#9782;</b><span>Pose</span></button>
+        <button class="tbtn" id="tbD"><b>&#8681;</b><span>Crouch</span></button>
+        <button class="tbtn" id="tbE"><b>&#9724;</b><span>Wall</span></button>
+        <button class="tbtn" id="tbF"><b>&#9835;</b><span>Taunt</span></button>
+        <button class="tbtn wide" id="tbG">Lock in</button>
+    </div>
+
+    <div id="rotateNag">
+        <div>
+            <div class="bigname">Turn it sideways</div>
+            <div class="lookaway">There isn't enough height to play in portrait. Rotate to landscape, or add the game to
+                your home screen for more room.</div>
+        </div>
     </div>
 
     <!-- ============ HIDER HUD ============ -->
@@ -1786,9 +2098,27 @@
         const ZONES = [
             {
                 id: 'atrium', name: 'The Atrium', desc: 'Hand-built gallery floor. Red carpet, chequer tiles, a crate store and a cafe \u2014 six real surfaces, proper corners, framed art to press yourself beside.',
-                handmade: true, floor: ['#8a3a34', '#9a7040', '#e8ecef', '#7a8087'], grit: '#6d4b28',
+                handmade: true, layout: 'atrium', floor: ['#8a3a34', '#9a7040', '#e8ecef', '#7a8087'], grit: '#6d4b28',
                 wall: '#4a4f57', wallTop: '#5b616a', wallLine: '#2e3238',
                 accent: '#ffd63b', prop: 'crate', decal: '#5b616a', metal: 0.22, rough: 0.62
+            },
+            {
+                id: 'house', name: 'The House', desc: 'Kitchen, bathroom, bedroom, toy room and a living room. Real domestic surfaces \u2014 carpet, splashback tiles, oak boards and a play mat that fights every colour you try.',
+                handmade: true, layout: 'house', floor: ['#c9bda8', '#eceff1', '#8fa3bd', '#b1885a'], grit: '#a2977f',
+                wall: '#d8d2c4', wallTop: '#e6e0d2', wallLine: '#a89f8c',
+                accent: '#ff8a2b', prop: 'crate', decal: '#bdb4a2', metal: 0.18, rough: 0.70
+            },
+            {
+                id: 'museum', name: 'Picture Museum', desc: 'Pictures on every wall in the building. Four wings, a marble hall, and enough framed colour that a well-painted body just becomes another canvas.',
+                handmade: true, layout: 'museum', floor: ['#3f6b4f', '#f0eee8', '#a8a49c', '#9a7040'], grit: '#928b80',
+                wall: '#5a5348', wallTop: '#6b6357', wallLine: '#3a352d',
+                accent: '#e0b13a', prop: 'crate', decal: '#6b6357', metal: 0.26, rough: 0.52
+            },
+            {
+                id: 'school', name: 'The School', desc: 'Classrooms, science lab, library, canteen and a gym, joined by a locker-lined corridor. Desks in rows make broken symmetry very easy to spot.',
+                handmade: true, layout: 'school', floor: ['#cfd4c9', '#5a6068', '#3b4a6b', '#c9a06a'], grit: '#a3a89e',
+                wall: '#b9bfae', wallTop: '#c7cdbc', wallLine: '#8c9283',
+                accent: '#3aa7ff', prop: 'crate', decal: '#a3a89e', metal: 0.20, rough: 0.66
             },
             {
                 id: 'rust', name: 'Rust Basin', desc: 'Open scrapyard. Long sightlines, almost no shadow to hide in — so they hide in plain colour.',
@@ -1839,95 +2169,356 @@
             concrete: { floor: ['#7a8087', '#848a92', '#6f757c', '#8e949c'], grit: '#5b6167' },
             tealtile: { floor: ['#2f7f7a', '#37918b', '#2a716d', '#40a099'], grit: '#1f5c58' },
             stone: { floor: ['#b9b2a6', '#c3bcb0', '#aea79b', '#cdc6ba'], grit: '#928b80' },
+
+            /* the house */
+            livCarpet: { floor: ['#c9bda8', '#d2c7b3', '#bfb29d', '#dbd1bf'], grit: '#a2977f' },
+            kitTile: { floor: ['#eceff1', '#c3ccd2'], grit: '#9aa4ab', checker: true },
+            bedCarpet: { floor: ['#8fa3bd', '#9aaec7', '#8296b1', '#a6b8cf'], grit: '#6f8299' },
+            bathTile: { floor: ['#e7f2f1', '#a9d3cf'], grit: '#82aeaa', checker: true },
+            playMat: { floor: ['#e0563f', '#efb42b', '#3f8fd0', '#4fae5f'], grit: '#b8442f' },
+            utilLino: { floor: ['#c6cdc2', '#ced5ca', '#bcc3b8', '#d6ddd2'], grit: '#9ba299' },
+            hallWood: { floor: ['#b1885a', '#bd9463', '#a37d52', '#c79f6d'], grit: '#8a6741' },
+
+            /* the museum */
+            marble: { floor: ['#f0eee8', '#3a3f47'], grit: '#a9a69f', checker: true },
+            grnCarpet: { floor: ['#3f6b4f', '#487859', '#385f47', '#528a63'], grit: '#2c4d39' },
+            greyStone: { floor: ['#a8a49c', '#b2aea6', '#9d9991', '#bcb8b0'], grit: '#847f77' },
+
+            /* the school */
+            schoolLino: { floor: ['#cfd4c9', '#d7dcd1', '#c5cabf', '#dfe4d9'], grit: '#a3a89e' },
+            labFloor: { floor: ['#5a6068', '#636970', '#525860', '#6c727a'], grit: '#42474e' },
+            libCarpet: { floor: ['#3b4a6b', '#445474', '#334261', '#4e5e80'], grit: '#2a3550' },
+            cantTile: { floor: ['#e3d9c4', '#c9bda4'], grit: '#a89c85', checker: true },
+            gymWood: { floor: ['#c9a06a', '#d4ac76', '#bd955f', '#dfb883'], grit: '#9c7847' },
         };
         const MAT_KEYS = Object.keys(MATERIALS);
 
-        /* rooms are carved out of solid rock, then joined by wide doorways */
-        const ATRIUM_ROOMS = [
-            { x: 2, y: 2, w: 15, h: 12, mat: 'carpet', label: 'West Gallery' },
-            { x: 18, y: 2, w: 17, h: 8, mat: 'parquet', label: 'North Hall' },
-            { x: 36, y: 2, w: 16, h: 12, mat: 'plaster', label: 'East Gallery' },
-            { x: 18, y: 11, w: 17, h: 13, mat: 'checker', label: 'The Atrium' },
-            { x: 2, y: 15, w: 15, h: 19, mat: 'concrete', label: 'Crate Store' },
-            { x: 36, y: 15, w: 16, h: 19, mat: 'tealtile', label: 'Cafe' },
-            { x: 18, y: 25, w: 17, h: 9, mat: 'stone', label: 'South Walk' },
-        ];
-        const ATRIUM_DOORS = [
-            { x: 17, y: 5, w: 1, h: 3, mat: 'parquet' }, { x: 35, y: 5, w: 1, h: 3, mat: 'parquet' },
-            { x: 24, y: 10, w: 4, h: 1, mat: 'parquet' }, { x: 17, y: 11, w: 1, h: 3, mat: 'carpet' },
-            { x: 35, y: 11, w: 1, h: 3, mat: 'plaster' }, { x: 6, y: 14, w: 3, h: 1, mat: 'concrete' },
-            { x: 45, y: 14, w: 3, h: 1, mat: 'tealtile' }, { x: 17, y: 28, w: 1, h: 3, mat: 'concrete' },
-            { x: 35, y: 28, w: 1, h: 3, mat: 'tealtile' }, { x: 25, y: 24, w: 4, h: 1, mat: 'stone' },
-        ];
-        const ATRIUM_PROPS = [
-            { kind: 'pedestal', at: [[5, 5], [9, 5], [13, 5], [5, 10], [9, 10], [13, 10]] },
-            { kind: 'planter', at: [[3, 3], [15, 3], [3, 12], [15, 12]] },
-            { kind: 'bench', at: [[21, 5], [22, 5], [27, 5], [28, 5], [32, 5]] },
-            { kind: 'vending', at: [[19, 3], [33, 3]] },
-            { kind: 'pedestal', at: [[40, 5], [45, 5], [50, 5], [40, 10], [45, 10]] },
-            { kind: 'planter', at: [[37, 3], [37, 12], [50, 12]] },
-            { kind: 'planter', at: [[25, 16], [26, 16], [27, 16], [25, 17], [26, 17], [27, 17], [25, 18], [26, 18], [27, 18]] },
-            { kind: 'bench', at: [[21, 14], [31, 14], [21, 21], [31, 21]] },
-            { kind: 'pedestal', at: [[20, 17], [33, 17]] },
-            {
-                kind: 'crate', at: [[4, 17], [5, 17], [4, 18], [5, 18], [9, 17], [10, 17], [9, 18],
-                [3, 24], [4, 24], [3, 25], [13, 20], [14, 20], [13, 21], [14, 21],
-                [6, 29], [7, 29], [6, 30], [7, 30], [12, 27], [13, 27]]
-            },
-            { kind: 'barrel', at: [[11, 24], [12, 24], [11, 25], [4, 31], [13, 31], [8, 22]] },
-            { kind: 'table', at: [[39, 18], [43, 18], [47, 18], [39, 23], [43, 23], [47, 23], [41, 29], [45, 29]] },
-            { kind: 'planter', at: [[37, 16], [50, 16], [37, 32], [50, 32]] },
-            { kind: 'vending', at: [[50, 24]] },
-            { kind: 'barrel', at: [[20, 27], [21, 27], [32, 31]] },
-            { kind: 'crate', at: [[24, 31], [25, 31], [29, 27]] },
-        ];
-        /* framed art on wall faces — the best thing on the map to wall-stick beside */
-        const ATRIUM_FRAMES = [
-            [4, 1], [7, 1], [10, 1], [13, 1], [39, 1], [42, 1], [45, 1], [48, 1],
-            [1, 5], [1, 8], [1, 11], [52, 5], [52, 8], [52, 11],
-            [20, 10], [22, 10], [30, 10], [32, 10],
-            [20, 24], [22, 24], [31, 24], [33, 24],
-            [17, 18], [17, 20], [35, 18], [35, 20],
-        ];
+        /* Wall decorations. Each gives the wall face its own colour to sample and
+           press yourself against: 1 art, 2 window, 3 poster, 4 tiling, 5 board, 6 lockers. */
+        const DECO_ART = 1, DECO_WINDOW = 2, DECO_POSTER = 3, DECO_TILE = 4, DECO_BOARD = 5, DECO_LOCKER = 6;
         const FRAME_COLORS = ['#d94f4f', '#4f7fd9', '#e0b13a', '#4fb37a', '#9b5fd0', '#e0793a', '#3ab7c9', '#d0568f'];
+        const POSTER_COLORS = ['#ff7a3d', '#39b3e0', '#ffd23d', '#7ad14f', '#e8567f', '#9a6fe0'];
 
-        function genAtrium(zone) {
+        /* helpers so a layout can say "counters along this wall" in one line */
+        const R = (x, y, w, h, mat) => ({ x, y, w, h, mat });
+        const fill = (kind, x, y, w, h) => ({ kind, rect: [x, y, w, h] });
+        const spot = (kind, ...at) => ({ kind, at });
+        const decoRun = (k, x, y, w, h, step) => {
+            const out = []; step = step || 1;
+            for (let j = 0; j < h; j += step) for (let i = 0; i < w; i += step) out.push({ k, x: x + i, y: y + j });
+            return out;
+        };
+
+        const LAYOUTS = {
+
+            /* ============================ THE ATRIUM ============================ */
+            atrium: {
+                rooms: [
+                    R(2, 2, 15, 12, 'carpet'), R(18, 2, 17, 8, 'parquet'), R(36, 2, 16, 12, 'plaster'),
+                    R(18, 11, 17, 13, 'checker'), R(2, 15, 15, 19, 'concrete'), R(36, 15, 16, 19, 'tealtile'),
+                    R(18, 25, 17, 9, 'stone'),
+                ],
+                doors: [
+                    R(17, 5, 1, 3, 'parquet'), R(35, 5, 1, 3, 'parquet'), R(24, 10, 4, 1, 'parquet'),
+                    R(17, 11, 1, 3, 'carpet'), R(35, 11, 1, 3, 'plaster'), R(6, 14, 3, 1, 'concrete'),
+                    R(45, 14, 3, 1, 'tealtile'), R(17, 28, 1, 3, 'concrete'), R(35, 28, 1, 3, 'tealtile'),
+                    R(25, 24, 4, 1, 'stone'),
+                ],
+                props: [
+                    spot('pedestal', [5, 5], [9, 5], [13, 5], [5, 10], [9, 10], [13, 10]),
+                    spot('planter', [3, 3], [15, 3], [3, 12], [15, 12]),
+                    spot('bench', [21, 5], [22, 5], [27, 5], [28, 5], [32, 5]),
+                    spot('vending', [19, 3], [33, 3]),
+                    spot('pedestal', [40, 5], [45, 5], [50, 5], [40, 10], [45, 10]),
+                    spot('planter', [37, 3], [37, 12], [50, 12]),
+                    fill('planter', 25, 16, 3, 3),
+                    spot('bench', [21, 14], [31, 14], [21, 21], [31, 21]),
+                    spot('pedestal', [20, 17], [33, 17]),
+                    fill('crate', 4, 17, 2, 2), spot('crate', [9, 17], [10, 17], [9, 18]),
+                    fill('crate', 3, 24, 2, 2), fill('crate', 13, 20, 2, 2), fill('crate', 6, 29, 2, 2),
+                    spot('crate', [12, 27], [13, 27]),
+                    spot('barrel', [11, 24], [12, 24], [11, 25], [4, 31], [13, 31], [8, 22]),
+                    spot('table', [39, 18], [43, 18], [47, 18], [39, 23], [43, 23], [47, 23], [41, 29], [45, 29]),
+                    spot('planter', [37, 16], [50, 16], [37, 32], [50, 32]),
+                    spot('vending', [50, 24]),
+                    spot('barrel', [20, 27], [21, 27], [32, 31]),
+                    spot('crate', [24, 31], [25, 31], [29, 27]),
+                ],
+                deco: [
+                    ...[[4, 1], [7, 1], [10, 1], [13, 1], [39, 1], [42, 1], [45, 1], [48, 1], [1, 5], [1, 8], [1, 11],
+                    [52, 5], [52, 8], [52, 11], [20, 10], [22, 10], [30, 10], [32, 10], [20, 24], [22, 24],
+                    [31, 24], [33, 24], [17, 18], [17, 20], [35, 18], [35, 20]].map(([x, y]) => ({ k: DECO_ART, x, y })),
+                ],
+            },
+
+            /* ============================= THE HOUSE ============================= */
+            house: {
+                rooms: [
+                    R(24, 2, 6, 32, 'hallWood'),      // hallway spine
+                    R(2, 2, 21, 15, 'livCarpet'),     // living room
+                    R(2, 18, 21, 16, 'kitTile'),      // kitchen
+                    R(31, 2, 21, 13, 'bedCarpet'),    // bedroom
+                    R(31, 16, 9, 8, 'bathTile'),      // bathroom
+                    R(41, 16, 11, 8, 'utilLino'),     // utility
+                    R(31, 25, 21, 9, 'playMat'),      // toy room
+                ],
+                doors: [
+                    R(23, 7, 1, 3, 'hallWood'), R(23, 24, 1, 3, 'hallWood'), R(30, 6, 1, 3, 'hallWood'),
+                    R(30, 18, 1, 3, 'hallWood'), R(30, 28, 1, 3, 'hallWood'), R(40, 19, 1, 3, 'utilLino'),
+                    R(8, 17, 3, 1, 'kitTile'),
+                ],
+                props: [
+                    // living room: sofa suite around a rug and a telly
+                    fill('sofa', 5, 4, 4, 1), spot('armchair', [3, 7], [3, 9]),
+                    fill('rug', 6, 7, 4, 3), fill('coffeeTbl', 7, 8, 2, 1),
+                    fill('tv', 6, 12, 3, 1), fill('bookshelf', 15, 3, 1, 6),
+                    spot('lamp', [4, 3], [11, 3]), spot('planter', [20, 3], [20, 15], [13, 15]),
+                    fill('sofa', 17, 8, 1, 4),
+                    // kitchen: counters along two walls, island table
+                    fill('counter', 3, 19, 8, 1), spot('cooker', [6, 19]), spot('sinkUnit', [9, 19]),
+                    spot('fridge', [3, 19], [3, 20]),
+                    fill('counter', 3, 26, 1, 6),
+                    fill('diningTbl', 15, 24, 2, 2),
+                    spot('chair', [14, 24], [17, 24], [14, 25], [17, 25], [15, 23], [16, 26]),
+                    spot('bin', [21, 32], [4, 33]), spot('planter', [21, 19]),
+                    // bedroom
+                    fill('bed', 35, 4, 3, 4), spot('lamp', [34, 4], [39, 4]),
+                    fill('wardrobe', 44, 3, 1, 4), fill('dresser', 48, 3, 1, 3),
+                    fill('rug', 40, 10, 4, 3), spot('planter', [33, 13], [50, 13]),
+                    // bathroom
+                    fill('bath', 32, 17, 3, 1), spot('toilet', [38, 22]), spot('basin', [32, 22], [33, 22]),
+                    // utility
+                    spot('washer', [42, 17], [43, 17]), fill('shelfUnit', 49, 17, 1, 5), spot('bin', [42, 22]),
+                    // toy room
+                    spot('toybox', [33, 27], [34, 27], [33, 28]),
+                    spot('blocks', [38, 29], [39, 29], [40, 30], [38, 31]),
+                    spot('teddy', [45, 27], [49, 31]), spot('ball', [43, 32], [36, 32], [50, 27]),
+                    fill('playTbl', 45, 29, 2, 2), spot('chair', [44, 29], [47, 29], [44, 30], [47, 30]),
+                    spot('bookshelf', [51, 27], [51, 28]),
+                    // hall
+                    spot('bookshelf', [24, 2], [24, 3]), spot('planter', [29, 33], [24, 33]), spot('lamp', [29, 2]),
+                ],
+                deco: [
+                    // windows onto the outside
+                    ...decoRun(DECO_WINDOW, 3, 1, 12, 1, 3), ...decoRun(DECO_WINDOW, 33, 1, 16, 1, 4),
+                    ...decoRun(DECO_WINDOW, 1, 20, 1, 10, 4), ...decoRun(DECO_WINDOW, 53, 4, 1, 8, 4),
+                    // family photos down the hall and over the sofa
+                    ...[[23, 4], [23, 12], [23, 19], [30, 12], [30, 24], [30, 32], [4, 1], [9, 1], [19, 1]]
+                        .map(([x, y]) => ({ k: DECO_ART, x, y })),
+                    // splashback tiling in kitchen and bathroom
+                    ...decoRun(DECO_TILE, 2, 17, 7, 1, 1), ...decoRun(DECO_TILE, 31, 15, 9, 1, 1),
+                    ...decoRun(DECO_TILE, 40, 16, 1, 8, 1),
+                    // posters in the toy room
+                    ...decoRun(DECO_POSTER, 33, 24, 18, 1, 3), ...decoRun(DECO_POSTER, 53, 26, 1, 7, 3),
+                ],
+            },
+
+            /* ============================ THE MUSEUM ============================ */
+            museum: {
+                rooms: [
+                    R(2, 2, 14, 32, 'grnCarpet'),     // west wing
+                    R(17, 2, 20, 9, 'parquet'),       // north wing
+                    R(17, 12, 20, 11, 'marble'),      // grand hall
+                    R(17, 25, 20, 9, 'carpet'),       // south wing
+                    R(38, 2, 14, 32, 'greyStone'),    // east wing
+                ],
+                doors: [
+                    R(16, 5, 1, 3, 'parquet'), R(16, 15, 1, 4, 'marble'), R(16, 28, 1, 3, 'carpet'),
+                    R(37, 5, 1, 3, 'parquet'), R(37, 15, 1, 4, 'marble'), R(37, 28, 1, 3, 'carpet'),
+                    R(24, 11, 6, 1, 'parquet'), R(24, 23, 6, 2, 'marble'),
+                ],
+                props: [
+                    spot('sculpture', [5, 5], [9, 5], [13, 5], [5, 12], [9, 12], [13, 12], [5, 20], [9, 20], [13, 20], [5, 28], [9, 28], [13, 28]),
+                    spot('ropePost', [4, 6], [6, 6], [8, 6], [10, 6], [12, 6], [14, 6], [4, 21], [8, 21], [12, 21]),
+                    spot('bench', [7, 16], [8, 16], [7, 24], [8, 24]),
+                    spot('sculpture', [41, 5], [45, 5], [49, 5], [41, 13], [45, 13], [49, 13], [41, 21], [45, 21], [49, 21], [41, 29], [45, 29], [49, 29]),
+                    spot('ropePost', [40, 7], [44, 7], [48, 7], [40, 23], [44, 23], [48, 23]),
+                    spot('bench', [43, 17], [44, 17], [43, 26], [44, 26]),
+                    spot('infoPanel', [19, 4], [24, 4], [29, 4], [34, 4]),
+                    spot('bench', [21, 7], [22, 7], [31, 7], [32, 7]),
+                    fill('planter', 26, 16, 2, 3),
+                    spot('sculpture', [20, 14], [33, 14], [20, 21], [33, 21]),
+                    spot('ropePost', [24, 15], [29, 15], [24, 20], [29, 20]),
+                    spot('bench', [19, 27], [20, 27], [33, 27], [34, 27]),
+                    spot('infoPanel', [22, 32], [27, 32], [32, 32]),
+                    spot('planter', [18, 2], [36, 2], [18, 33], [36, 33]),
+                ],
+                deco: [
+                    /* pictures on every reachable wall face — the whole point of the place */
+                    ...decoRun(DECO_ART, 2, 1, 14, 1, 2), ...decoRun(DECO_ART, 38, 1, 14, 1, 2),
+                    ...decoRun(DECO_ART, 1, 3, 1, 30, 2), ...decoRun(DECO_ART, 52, 3, 1, 30, 2),
+                    ...decoRun(DECO_ART, 2, 34, 14, 1, 2), ...decoRun(DECO_ART, 38, 34, 14, 1, 2),
+                    ...decoRun(DECO_ART, 16, 2, 1, 3, 1), ...decoRun(DECO_ART, 16, 9, 1, 5, 1),
+                    ...decoRun(DECO_ART, 16, 20, 1, 7, 1), ...decoRun(DECO_ART, 16, 32, 1, 2, 1),
+                    ...decoRun(DECO_ART, 37, 2, 1, 3, 1), ...decoRun(DECO_ART, 37, 9, 1, 5, 1),
+                    ...decoRun(DECO_ART, 37, 20, 1, 7, 1), ...decoRun(DECO_ART, 37, 32, 1, 2, 1),
+                    ...decoRun(DECO_ART, 17, 11, 6, 1, 2), ...decoRun(DECO_ART, 31, 11, 6, 1, 2),
+                    ...decoRun(DECO_ART, 17, 23, 6, 1, 2), ...decoRun(DECO_ART, 31, 23, 6, 1, 2),
+                    ...decoRun(DECO_ART, 17, 1, 20, 1, 3), ...decoRun(DECO_ART, 17, 34, 20, 1, 3),
+                ],
+            },
+
+            /* ============================ THE SCHOOL ============================ */
+            school: {
+                rooms: [
+                    R(2, 16, 50, 5, 'schoolLino'),    // main corridor
+                    R(2, 2, 15, 13, 'schoolLino'),    // classroom A
+                    R(18, 2, 15, 13, 'schoolLino'),   // classroom B
+                    R(34, 2, 18, 13, 'labFloor'),     // science lab
+                    R(2, 22, 15, 12, 'libCarpet'),    // library
+                    R(18, 22, 15, 12, 'cantTile'),    // canteen
+                    R(34, 22, 18, 12, 'gymWood'),     // gym
+                ],
+                doors: [
+                    R(8, 15, 3, 1, 'schoolLino'), R(24, 15, 3, 1, 'schoolLino'), R(42, 15, 3, 1, 'schoolLino'),
+                    R(8, 21, 3, 1, 'schoolLino'), R(24, 21, 3, 1, 'schoolLino'), R(42, 21, 3, 1, 'schoolLino'),
+                ],
+                props: [
+                    // classroom A: rows of desks facing the board
+                    fill('desk', 4, 6, 10, 1), fill('desk', 4, 9, 10, 1), fill('desk', 4, 12, 10, 1),
+                    spot('teachDesk', [8, 3], [9, 3]), spot('bin', [2, 3]), spot('planter', [15, 3], [15, 13]),
+                    spot('shelfUnit', [15, 7], [15, 8]),
+                    // classroom B
+                    fill('desk', 20, 6, 10, 1), fill('desk', 20, 9, 10, 1), fill('desk', 20, 12, 10, 1),
+                    spot('teachDesk', [24, 3], [25, 3]), spot('bin', [18, 3]), spot('shelfUnit', [31, 7], [31, 8]),
+                    spot('piano', [30, 13], [31, 13]),
+                    // science lab
+                    fill('labBench', 36, 5, 14, 1), fill('labBench', 36, 8, 14, 1), fill('labBench', 36, 11, 14, 1),
+                    spot('teachDesk', [42, 3], [43, 3]), spot('sinkUnit', [35, 5], [35, 8], [35, 11]),
+                    spot('shelfUnit', [51, 4], [51, 5], [51, 12]),
+                    // corridor: lockers and bins
+                    fill('locker', 2, 16, 5, 1), fill('locker', 12, 16, 11, 1), fill('locker', 28, 16, 13, 1), fill('locker', 46, 16, 6, 1),
+                    fill('locker', 2, 20, 5, 1), fill('locker', 12, 20, 11, 1), fill('locker', 28, 20, 13, 1), fill('locker', 46, 20, 6, 1),
+                    spot('bin', [17, 18], [33, 18], [50, 18]), spot('planter', [2, 18], [51, 18]),
+                    // library
+                    fill('shelfUnit', 3, 24, 1, 8), fill('shelfUnit', 6, 24, 1, 8), fill('shelfUnit', 9, 24, 1, 8),
+                    fill('shelfUnit', 12, 24, 1, 8), spot('desk', [15, 26], [15, 27], [15, 30], [15, 31]),
+                    spot('teachDesk', [4, 33], [5, 33]), spot('lamp', [15, 24]),
+                    // canteen
+                    fill('cantTbl', 20, 25, 3, 1), fill('cantTbl', 20, 28, 3, 1), fill('cantTbl', 20, 31, 3, 1),
+                    fill('cantTbl', 27, 25, 3, 1), fill('cantTbl', 27, 28, 3, 1), fill('cantTbl', 27, 31, 3, 1),
+                    spot('counter', [31, 23], [31, 24], [31, 25]), spot('bin', [18, 33], [32, 33]),
+                    spot('vending', [24, 23], [25, 23]),
+                    // gym
+                    fill('gymMat', 36, 25, 3, 3), fill('gymMat', 47, 29, 3, 3),
+                    spot('gymBox', [42, 24], [43, 24], [42, 25], [43, 25]),
+                    spot('ballBin', [35, 32], [50, 24]), spot('bench', [36, 33], [37, 33], [48, 33], [49, 33]),
+                ],
+                deco: [
+                    ...decoRun(DECO_BOARD, 4, 1, 9, 1, 1), ...decoRun(DECO_BOARD, 20, 1, 9, 1, 1),
+                    ...decoRun(DECO_BOARD, 38, 1, 10, 1, 1),
+                    ...decoRun(DECO_WINDOW, 1, 3, 1, 11, 3), ...decoRun(DECO_WINDOW, 52, 3, 1, 11, 3),
+                    ...decoRun(DECO_WINDOW, 1, 23, 1, 10, 3), ...decoRun(DECO_WINDOW, 52, 23, 1, 10, 3),
+                    ...decoRun(DECO_POSTER, 2, 15, 50, 1, 4), ...decoRun(DECO_POSTER, 2, 21, 50, 1, 4),
+                    ...decoRun(DECO_LOCKER, 17, 16, 1, 5, 1), ...decoRun(DECO_LOCKER, 33, 16, 1, 5, 1),
+                    ...decoRun(DECO_POSTER, 18, 34, 15, 1, 3), ...decoRun(DECO_POSTER, 35, 34, 17, 1, 4),
+                    ...decoRun(DECO_ART, 3, 34, 13, 1, 4),
+                ],
+            },
+        };
+
+        function genHandmade(zone) {
+            const L = LAYOUTS[zone.layout];
             const grid = new Uint8Array(COLS * ROWS).fill(1);
             const mat = new Uint8Array(COLS * ROWS);
             const deco = new Uint8Array(COLS * ROWS);
             const decoCol = {};
             const at = (x, y) => (x < 0 || y < 0 || x >= COLS || y >= ROWS) ? 1 : grid[y * COLS + x];
             const carve = (r) => {
-                const mi = MAT_KEYS.indexOf(r.mat);
+                const mi = Math.max(0, MAT_KEYS.indexOf(r.mat));
                 for (let y = r.y; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) {
                     if (x < 1 || y < 1 || x >= COLS - 1 || y >= ROWS - 1) continue;
                     grid[y * COLS + x] = 0; mat[y * COLS + x] = mi;
                 }
             };
-            ATRIUM_ROOMS.forEach(carve);
-            ATRIUM_DOORS.forEach(carve);
+            L.rooms.forEach(carve); L.doors.forEach(carve);
 
-            const props = [], decals = [];
-            for (const set of ATRIUM_PROPS) {
-                for (const [x, y] of set.at) {
-                    if (at(x, y) !== 0) continue;
-                    props.push({
-                        x: x * TILE + TILE / 2, y: y * TILE + TILE / 2, tx: x, ty: y, r: TILE * 0.34,
-                        kind: set.kind, rot: (set.kind === 'crate' || set.kind === 'table' || set.kind === 'vending') ? 0 : rnd(0, 6.28),
-                        s: rnd(0.9, 1.08)
-                    });
-                    grid[y * COLS + x] = 2;
+            // a doorway and the tile each side of it stay clear, whatever the layout asks for
+            const blocked = new Uint8Array(COLS * ROWS);
+            for (const d of L.doors) {
+                for (let y = d.y - 1; y < d.y + d.h + 1; y++) for (let x = d.x - 1; x < d.x + d.w + 1; x++) {
+                    if (x >= 0 && y >= 0 && x < COLS && y < ROWS) blocked[y * COLS + x] = 1;
                 }
             }
-            ATRIUM_FRAMES.forEach(([x, y], i) => {
-                if (at(x, y) !== 1) return;
-                deco[y * COLS + x] = 1;
-                decoCol[y * COLS + x] = FRAME_COLORS[i % FRAME_COLORS.length];
-            });
-            // scuffs and stains, denser in the store than the galleries
+            const props = [], decals = [];
+            const place = (kind, x, y) => {
+                if (at(x, y) !== 0 || blocked[y * COLS + x]) return;
+                props.push({
+                    x: x * TILE + TILE / 2, y: y * TILE + TILE / 2, tx: x, ty: y, r: TILE * 0.34,
+                    kind, rot: 0, s: 1
+                });
+                grid[y * COLS + x] = 2;
+            };
+            for (const set of L.props) {
+                if (set.rect) {
+                    const [x, y, w, h] = set.rect;
+                    for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) place(set.kind, x + i, y + j);
+                }
+                if (set.at) for (const [x, y] of set.at) place(set.kind, x, y);
+            }
+            let ai = 0, pi = 0;
+            for (const d of (L.deco || [])) {
+                if (at(d.x, d.y) !== 1) continue;
+                // only worth decorating a wall face somebody can actually stand against
+                if (at(d.x - 1, d.y) === 1 && at(d.x + 1, d.y) === 1 && at(d.x, d.y - 1) === 1 && at(d.x, d.y + 1) === 1) continue;
+                deco[d.y * COLS + d.x] = d.k;
+                decoCol[d.y * COLS + d.x] =
+                    d.k === DECO_ART ? FRAME_COLORS[(ai++) % FRAME_COLORS.length] :
+                        d.k === DECO_POSTER ? POSTER_COLORS[(pi++) % POSTER_COLORS.length] :
+                            d.k === DECO_WINDOW ? '#a9d8f5' :
+                                d.k === DECO_TILE ? '#dff0ee' :
+                                    d.k === DECO_BOARD ? '#f2f4f0' : '#3f6fa8';
+            }
             for (let y = 1; y < ROWS - 1; y++) for (let x = 1; x < COLS - 1; x++) {
                 if (grid[y * COLS + x] !== 0) continue;
-                if (RNGS() < 0.07) decals.push({ x: x * TILE + rnd(6, TILE - 6), y: y * TILE + rnd(6, TILE - 6), r: rnd(5, 15), rot: rnd(0, 6.28) });
+                if (RNGS() < 0.06) decals.push({ x: x * TILE + rnd(6, TILE - 6), y: y * TILE + rnd(6, TILE - 6), r: rnd(5, 14), rot: rnd(0, 6.28) });
+            }
+
+            // furniture can wall off a corner; pull back whatever does
+            const flood = (start) => {
+                const seen = new Uint8Array(COLS * ROWS);
+                const q = [start]; seen[start] = 1; let head = 0;
+                while (head < q.length) {
+                    const c = q[head++], cx = c % COLS, cy = (c / COLS) | 0;
+                    for (const [nx, ny] of [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]) {
+                        if (nx < 0 || ny < 0 || nx >= COLS || ny >= ROWS) continue;
+                        const ni = ny * COLS + nx;
+                        if (seen[ni] || grid[ni] !== 0) continue;
+                        seen[ni] = 1; q.push(ni);
+                    }
+                }
+                return seen;
+            };
+            /* keep the largest walkable region as the truth, so one sealed cupboard
+               never makes the rest of the building look unreachable */
+            const reach = () => {
+                const done = new Uint8Array(COLS * ROWS);
+                let best = null, bestN = -1;
+                for (let i = 0; i < grid.length; i++) {
+                    if (grid[i] !== 0 || done[i]) continue;
+                    const seen = flood(i);
+                    let n = 0; for (let j = 0; j < seen.length; j++) if (seen[j]) { done[j] = 1; n++; }
+                    if (n > bestN) { bestN = n; best = seen; }
+                }
+                return best || new Uint8Array(COLS * ROWS);
+            };
+            for (let pass = 0; pass < 10; pass++) {
+                const seen = reach(); let stuck = false, freed = false;
+                for (let y = 1; y < ROWS - 1; y++) for (let x = 1; x < COLS - 1; x++) {
+                    const i = y * COLS + x;
+                    if (grid[i] !== 0 || seen[i]) continue;
+                    stuck = true;
+                    for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+                        const ni = ny * COLS + nx;
+                        if (grid[ni] === 2) {
+                            grid[ni] = 0; freed = true;
+                            const k = props.findIndex(pp => pp.tx === nx && pp.ty === ny);
+                            if (k >= 0) props.splice(k, 1);
+                        }
+                    }
+                }
+                if (!stuck) break;
+                if (!freed) { const s2 = reach(); for (let i = 0; i < grid.length; i++) if (grid[i] === 0 && !s2[i]) grid[i] = 1; break; }
             }
 
             const solid = (x, y) => {
@@ -1937,7 +2528,7 @@
             };
             const tileOpen = (tx, ty) => tx >= 0 && ty >= 0 && tx < COLS && ty < ROWS && grid[ty * COLS + tx] === 0;
             const matAt = (x, y) => MATERIALS[MAT_KEYS[mat[y * COLS + x]]] || MATERIALS.concrete;
-            return { zone, grid, at, props, decals, solid, tileOpen, mat, matAt, deco, decoCol };
+            return { zone, grid, at, props, decals, solid, tileOpen, mat, matAt, deco, decoCol, layout: L };
         }
 
         /* ---------- helpers ---------- */
@@ -1988,7 +2579,7 @@
            MAP GENERATION
            ============================================================ */
         function genMap(zone, seed) {
-            if (zone.handmade) return genAtrium(zone);
+            if (zone.handmade) return genHandmade(zone);
             // 0 = floor, 1 = wall
             const grid = new Uint8Array(COLS * ROWS);
             const at = (x, y) => grid[y * COLS + x];
@@ -2189,13 +2780,43 @@
                 g.fillRect(X + 6, Y + TILE - 9, TILE - 12, 3);
                 g.globalAlpha = 1;
                 // framed art: a solid block of colour on the wall face, ideal to wall-stick against
-                if (map.deco && map.deco[y * COLS + x] === 1) {
+                const dk = map.deco ? map.deco[y * COLS + x] : 0;
+                if (dk) {
                     const col = map.decoCol[y * COLS + x] || '#d94f4f';
-                    g.fillStyle = '#2a2018'; g.fillRect(X + 4, Y + 4, TILE - 8, TILE - 8);
-                    g.fillStyle = col; g.fillRect(X + 7, Y + 7, TILE - 14, TILE - 14);
-                    g.globalAlpha = .30; g.fillStyle = '#fff';
-                    g.fillRect(X + 7, Y + 7, TILE - 14, (TILE - 14) / 2);
-                    g.globalAlpha = 1;
+                    if (dk === 1) {                                   // framed art
+                        g.fillStyle = '#2a2018'; g.fillRect(X + 4, Y + 4, TILE - 8, TILE - 8);
+                        g.fillStyle = col; g.fillRect(X + 7, Y + 7, TILE - 14, TILE - 14);
+                        g.globalAlpha = .30; g.fillStyle = '#fff'; g.fillRect(X + 7, Y + 7, TILE - 14, (TILE - 14) / 2); g.globalAlpha = 1;
+                    } else if (dk === 2) {                            // window
+                        g.fillStyle = '#e8e4d8'; g.fillRect(X + 3, Y + 3, TILE - 6, TILE - 6);
+                        g.fillStyle = col; g.fillRect(X + 6, Y + 6, TILE - 12, TILE - 12);
+                        g.strokeStyle = '#e8e4d8'; g.lineWidth = 3;
+                        g.beginPath(); g.moveTo(X + TILE / 2, Y + 6); g.lineTo(X + TILE / 2, Y + TILE - 6);
+                        g.moveTo(X + 6, Y + TILE / 2); g.lineTo(X + TILE - 6, Y + TILE / 2); g.stroke();
+                    } else if (dk === 3) {                            // poster
+                        g.fillStyle = col; g.fillRect(X + 5, Y + 3, TILE - 10, TILE - 6);
+                        g.globalAlpha = .45; g.fillStyle = '#fff';
+                        g.fillRect(X + 8, Y + 7, TILE - 16, 4); g.fillRect(X + 8, Y + 15, TILE - 22, 3); g.globalAlpha = 1;
+                    } else if (dk === 4) {                            // splashback tiling
+                        g.fillStyle = col; g.fillRect(X + 2, Y + 2, TILE - 4, TILE - 4);
+                        g.strokeStyle = 'rgba(0,0,0,.16)'; g.lineWidth = 1;
+                        for (let i = 1; i < 4; i++) {
+                            g.beginPath(); g.moveTo(X + 2 + i * (TILE - 4) / 4, Y + 2); g.lineTo(X + 2 + i * (TILE - 4) / 4, Y + TILE - 2);
+                            g.moveTo(X + 2, Y + 2 + i * (TILE - 4) / 4); g.lineTo(X + TILE - 2, Y + 2 + i * (TILE - 4) / 4); g.stroke();
+                        }
+                    } else if (dk === 5) {                            // whiteboard
+                        g.fillStyle = '#8a8f96'; g.fillRect(X + 2, Y + 5, TILE - 4, TILE - 10);
+                        g.fillStyle = col; g.fillRect(X + 4, Y + 7, TILE - 8, TILE - 14);
+                        g.strokeStyle = '#7fa8d8'; g.lineWidth = 2;
+                        g.beginPath(); g.moveTo(X + 8, Y + 13); g.lineTo(X + TILE - 10, Y + 13);
+                        g.moveTo(X + 8, Y + 20); g.lineTo(X + TILE - 16, Y + 20); g.stroke();
+                    } else {                                      // lockers
+                        g.fillStyle = col; g.fillRect(X + 2, Y + 2, TILE - 4, TILE - 4);
+                        g.strokeStyle = 'rgba(0,0,0,.35)'; g.lineWidth = 2;
+                        g.beginPath(); g.moveTo(X + TILE / 2, Y + 2); g.lineTo(X + TILE / 2, Y + TILE - 2); g.stroke();
+                        g.fillStyle = 'rgba(0,0,0,.45)';
+                        g.fillRect(X + TILE / 2 - 9, Y + TILE / 2 - 2, 4, 4); g.fillRect(X + TILE / 2 + 5, Y + TILE / 2 - 2, 4, 4);
+                    }
                 }
             }
 
@@ -2213,7 +2834,81 @@
             return { canvas: cv, ctx: g };
         }
 
+        /* sh: slab = tile-filling rounded block, disc = round, soft = padded furniture.
+           Each entry is [shape, fill, outline, width, height, accent] in tile units. */
+        const PROP_STYLE = {
+            // living room
+            sofa: ['soft', '#6d81a0', '#495a73', 1.0, 1.0, '#8497b5'],
+            armchair: ['soft', '#7b6f92', '#544a68', 0.86, 0.86, '#948aa8'],
+            coffeeTbl: ['slab', '#8a6440', '#5e4429', 0.82, 0.62, '#a67d54'],
+            tv: ['slab', '#23262b', '#0e1013', 0.94, 0.34, '#3d4e5c'],
+            bookshelf: ['slab', '#7d5b39', '#553d25', 0.94, 0.55, '#a07c52'],
+            rug: ['soft', '#b5474a', '#7d2f31', 1.0, 1.0, '#cf6a6c'],
+            lamp: ['disc', '#f0e2b8', '#b9a875', 0.42, 0.42, '#fff6d8'],
+            // kitchen
+            counter: ['slab', '#e6e3da', '#a9a49a', 0.98, 0.86, '#c9c4b8'],
+            fridge: ['slab', '#dfe3e6', '#9aa1a6', 0.9, 0.94, '#f2f5f7'],
+            cooker: ['slab', '#4a4f55', '#26292d', 0.9, 0.9, '#7d848b'],
+            sinkUnit: ['slab', '#cfd6d9', '#96a0a5', 0.94, 0.86, '#8fa8b2'],
+            diningTbl: ['disc', '#b1885a', '#7d5f3c', 0.86, 0.86, '#c9a274'],
+            chair: ['slab', '#8a6a45', '#5e472c', 0.5, 0.5, '#a8845b'],
+            bin: ['disc', '#5f6a72', '#3a4248', 0.46, 0.46, '#7d8990'],
+            // bedroom
+            bed: ['soft', '#e9e3d6', '#b0a898', 1.0, 1.0, '#c7bda9'],
+            wardrobe: ['slab', '#6f4f33', '#472f1c', 0.96, 0.9, '#8e6a48'],
+            dresser: ['slab', '#8a6440', '#5e4429', 0.94, 0.62, '#a67d54'],
+            // bathroom
+            bath: ['soft', '#f4f9f8', '#b6cbc9', 1.0, 1.0, '#d8e9e7'],
+            toilet: ['disc', '#f6faf9', '#bccfcd', 0.58, 0.58, '#e2eeed'],
+            basin: ['disc', '#f2f7f6', '#b6cbc9', 0.5, 0.5, '#dcebe9'],
+            washer: ['slab', '#e8ecee', '#a4acb1', 0.9, 0.9, '#5f7b8a'],
+            // toy room
+            toybox: ['slab', '#e0563f', '#a63a28', 0.9, 0.82, '#f0836e'],
+            blocks: ['slab', '#efb42b', '#b8851a', 0.6, 0.6, '#3f8fd0'],
+            teddy: ['disc', '#b98b52', '#856135', 0.56, 0.56, '#d8ac74'],
+            ball: ['disc', '#3f8fd0', '#28629a', 0.52, 0.52, '#7dbcf0'],
+            playTbl: ['disc', '#4fae5f', '#357a41', 0.78, 0.78, '#77cc85'],
+            // museum
+            sculpture: ['disc', '#cfc9ba', '#948d7d', 0.62, 0.62, '#eee8dc'],
+            ropePost: ['disc', '#8a7233', '#5c4b20', 0.34, 0.34, '#c0a24d'],
+            infoPanel: ['slab', '#2f3a4a', '#161d27', 0.7, 0.42, '#9fb4cc'],
+            // school
+            desk: ['slab', '#d8c69a', '#a2916c', 0.88, 0.6, '#f0e0b8'],
+            teachDesk: ['slab', '#7d5b39', '#553d25', 0.96, 0.72, '#a07c52'],
+            locker: ['slab', '#3f6fa8', '#254a72', 0.92, 0.9, '#5d8ec7'],
+            labBench: ['slab', '#3a4148', '#1e2328', 0.98, 0.82, '#5f6a73'],
+            shelfUnit: ['slab', '#6b4f30', '#43301c', 0.96, 0.86, '#8c6c46'],
+            cantTbl: ['soft', '#c9b78e', '#96876a', 1.0, 0.72, '#e2d3b0'],
+            gymBox: ['slab', '#b98b52', '#856135', 0.92, 0.86, '#d8ac74'],
+            gymMat: ['soft', '#2f7f9e', '#1d5a72', 1.0, 1.0, '#4fa5c4'],
+            ballBin: ['disc', '#8a8f96', '#5d6268', 0.7, 0.7, '#b0b6bd'],
+            piano: ['slab', '#1b1d20', '#000000', 0.98, 0.7, '#e8e8e8'],
+        };
+        function drawStyled(g, p) {
+            const st = PROP_STYLE[p.kind]; const T = TILE;
+            const [sh, fill, line, w, h, acc] = st;
+            const W = w * T * 0.5, H = h * T * 0.5;
+            g.save(); g.translate(p.x, p.y); g.rotate(p.rot || 0);
+            if (sh === 'disc') {
+                g.fillStyle = fill; g.beginPath(); g.arc(0, 0, W, 0, 6.2832); g.fill();
+                g.strokeStyle = line; g.lineWidth = 2; g.stroke();
+                g.fillStyle = acc; g.globalAlpha = .55;
+                g.beginPath(); g.arc(-W * 0.24, -W * 0.24, W * 0.42, 0, 6.2832); g.fill(); g.globalAlpha = 1;
+            } else {
+                const r = sh === 'soft' ? Math.min(W, H) * 0.45 : 3;
+                g.fillStyle = fill;
+                g.beginPath();
+                if (g.roundRect) g.roundRect(-W, -H, W * 2, H * 2, r); else g.rect(-W, -H, W * 2, H * 2);
+                g.fill();
+                g.strokeStyle = line; g.lineWidth = 2; g.stroke();
+                g.fillStyle = acc; g.globalAlpha = sh === 'soft' ? .5 : .38;
+                g.fillRect(-W * 0.7, -H * 0.62, W * 1.4, H * 0.5); g.globalAlpha = 1;
+            }
+            g.restore();
+        }
+
         function drawProp(g, p, z) {
+            if (PROP_STYLE[p.kind]) { drawStyled(g, p); return; }
             g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.scale(p.s, p.s);
             const R = p.r;
             if (p.kind === 'barrel') {
@@ -2778,6 +3473,7 @@
             buildWorld();
             hideAllScreens();
 
+            tpPlaying(true);
             if (G.mode === 'local') { startLocal(); return; }
             if (G.mode === 'online') { startOnlineHost(); return; }
 
@@ -2811,7 +3507,7 @@
         function ppName(i) { return 'Player ' + (i + 1); }
         function showHandoff() {
             const pp = G.pp, isSeeker = pp.idx === pp.n - 1;
-            G.phase = 'handoff';
+            G.phase = 'handoff'; tpPlaying(false);
             hideAllScreens();
             document.getElementById('handoff').hidden = false;
             document.getElementById('hoStep').textContent = 'Player ' + (pp.idx + 1) + ' of ' + pp.n;
@@ -2824,7 +3520,7 @@
         function ppBegin() {
             const pp = G.pp;
             if (pp.idx === pp.n - 1) { ppSeek(); return; }
-            hideAllScreens();
+            hideAllScreens(); tpPlaying(true);
             G.role = 'hider'; G.phase = 'prep'; G.prepLeft = PP_PREP;
             G.player.x = G.spawn.x; G.player.y = G.spawn.y;
             startHiderRound();
@@ -2845,13 +3541,14 @@
             showHandoff();
         }
         function ppSeek() {
-            hideAllScreens();
+            hideAllScreens(); tpPlaying(true);
             G.role = 'seeker'; G.phase = 'seek';
             G.player.x = G.spawn.x; G.player.y = G.spawn.y;
             G.seekLeft = SEEK_SECONDS; G.energy = 100; G.markers = []; G.misses = 0;
             document.getElementById('hud').hidden = false;
             buildTally(G.remote.length);
             sweepDown(880, 180, 0.5, 0.16);
+            tpPlaying(true);
             toast('Find all ' + G.remote.length, 'good');
             G.last = performance.now();
         }
@@ -3041,6 +3738,7 @@
             document.getElementById('hidePhase').hidden = true;
             document.getElementById('hud').hidden = false;
             sweepDown(880, 180, 0.5, 0.16);
+            tpPlaying(true);
             toast('Optics online — find them all', 'good');
         }
 
@@ -3096,7 +3794,7 @@
                 return;
             }
             if (G.phase !== 'seek') return;
-            if (e.pointerType === 'touch' && e.clientX < innerWidth * 0.42) { startStick(e); return; }
+            if (e.pointerType === 'touch' && e.clientX < innerWidth * 0.5) { startStick(e); return; }
             tryTag(e.clientX, e.clientY);
         });
 
@@ -3494,7 +4192,7 @@
 
         /* ---------- end ---------- */
         function endGame(win) {
-            G.running = false; G.phase = 'over';
+            G.running = false; G.phase = 'over'; tpPlaying(false);
             document.getElementById('hud').hidden = true;
             document.getElementById('results').hidden = false;
             const found = allHiders().filter(h => h.found).length;
@@ -3574,6 +4272,7 @@
             document.getElementById('tauntN').textContent = '2';
             buildPalette(); buildPartRow(); buildPoseGrid();
             syncFromMix(); drawWheel(); refreshPaint();
+            tpPlaying(true);
         }
 
         /* ---------- colour: one working mix, edited by every tool ---------- */
@@ -3963,7 +4662,7 @@
         }
 
         function beginEvade() {
-            G.phase = 'evade';
+            G.phase = 'evade'; tpPlaying(true);
             G.paintOpen = false; G.poseOpen = false;
             document.getElementById('paintSheet').hidden = true;
             document.getElementById('poseSheet').hidden = true;
@@ -4188,7 +4887,7 @@
 
         /* ---------- answer check ---------- */
         function endHider() {
-            G.running = false; G.phase = 'over';
+            G.running = false; G.phase = 'over'; tpPlaying(false);
             const hs = G.hs, b = hs.lastBreak || matchBreakdown();
             document.getElementById('hhud').hidden = true;
             document.getElementById('answerCheck').hidden = false;
@@ -4261,6 +4960,7 @@
             document.getElementById('btnPaint').classList.toggle('on', G.paintOpen);
             document.getElementById('btnPose').classList.toggle('on', G.poseOpen);
             if (G.paintOpen) { syncFromMix(); drawWheel(); refreshPaint(); }
+            tpSyncPad();
         }
         function togglePose(force) {
             if (G.role !== 'hider' || G.phase === 'over') return;
@@ -4271,6 +4971,7 @@
             document.getElementById('btnPaint').classList.toggle('on', G.paintOpen);
             document.getElementById('btnPose').classList.toggle('on', G.poseOpen);
             if (G.poseOpen) refreshPaint();
+            tpSyncPad();
         }
         document.getElementById('btnPaint').onclick = () => togglePaint();
         document.getElementById('btnPose').onclick = () => togglePose();
@@ -4443,22 +5144,25 @@
         function paintPreview(c, z) {
             const g = c.getContext('2d'), T = 10;
             if (z.handmade) {
+                const L = LAYOUTS[z.layout];
                 const sx = c.width / COLS, sy = c.height / ROWS;
                 g.fillStyle = z.wall; g.fillRect(0, 0, c.width, c.height);
-                ATRIUM_ROOMS.forEach(r => {
+                L.rooms.forEach(r => {
                     const M = MATERIALS[r.mat];
                     for (let y = r.y; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) {
                         g.fillStyle = M.checker ? M.floor[(x + y) % 2] : M.floor[(x * 7 + y * 13) % M.floor.length];
                         g.fillRect(x * sx, y * sy, sx + 0.6, sy + 0.6);
                     }
                 });
-                ATRIUM_DOORS.forEach(d => {
+                L.doors.forEach(d => {
                     const M = MATERIALS[d.mat]; g.fillStyle = M.floor[0];
                     g.fillRect(d.x * sx, d.y * sy, d.w * sx + 0.6, d.h * sy + 0.6);
                 });
-                ATRIUM_FRAMES.forEach(([x, y], i) => {
-                    g.fillStyle = FRAME_COLORS[i % FRAME_COLORS.length];
-                    g.fillRect(x * sx, y * sy, sx + 0.6, sy + 0.6);
+                (L.deco || []).forEach((d, i) => {
+                    g.fillStyle = d.k === 2 ? '#a9d8f5' : d.k === 3 ? POSTER_COLORS[i % POSTER_COLORS.length]
+                        : d.k === 4 ? '#dff0ee' : d.k === 5 ? '#f2f4f0' : d.k === 6 ? '#3f6fa8'
+                            : FRAME_COLORS[i % FRAME_COLORS.length];
+                    g.fillRect(d.x * sx, d.y * sy, sx + 0.6, sy + 0.6);
                 });
                 g.save(); g.translate(c.width * 0.70, c.height * 0.62);
                 g.fillStyle = MATERIALS.checker.floor[0]; posePath(g, 11, 'crouch'); g.fill();
@@ -4480,7 +5184,7 @@
             g.restore();
         }
 
-        document.getElementById('startBtn').onclick = () => { actx(); startGame(); };
+        document.getElementById('startBtn').onclick = () => { actx(); goFullscreen(); startGame(); };
         document.getElementById('hostBtn').onclick = () => { actx(); hostRoom(); };
         document.getElementById('joinBtn').onclick = () => { actx(); joinRoom(); };
         document.getElementById('copyCode').onclick = () => {
@@ -4494,7 +5198,7 @@
             beginSeek();
         };
         document.getElementById('hideQuit').onclick = quit;
-        document.getElementById('hoReady').onclick = () => { actx(); ppBegin(); };
+        document.getElementById('hoReady').onclick = () => { actx(); goFullscreen(); ppBegin(); };
         document.getElementById('hoQuit').onclick = quit;
         document.getElementById('abQuit').onclick = quit;
         document.getElementById('againBtn').onclick = () => { startGame(); };
@@ -4510,6 +5214,7 @@
 
         function quit() {
             G.running = false; G.phase = 'menu'; G.mode = 'solo'; G.remote = []; G.pp = null;
+            tpPlaying(false);
             netClose();
             document.getElementById('handoff').hidden = true;
             document.getElementById('hhud').hidden = true;
@@ -4523,6 +5228,114 @@
             document.getElementById('menu').hidden = false;
         }
 
+        /* ============================================================
+           TOUCH BUILD — only switches on for a device that actually has a finger
+           ============================================================ */
+        const IS_TOUCH = (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches)
+            || (typeof navigator !== 'undefined' && (navigator.maxTouchPoints || 0) > 0);
+
+        function tpApply() {
+            document.body.classList.toggle('tp', IS_TOUCH);
+        }
+        function tpPlaying(on) {
+            if (!IS_TOUCH) return;
+            document.body.classList.toggle('playing', !!on);
+            tpSyncPad();
+        }
+        /* the pad only ever shows the buttons that do something right now */
+        function tpSyncPad() {
+            if (!IS_TOUCH) return;
+            const hider = G.role === 'hider' && (G.phase === 'prep' || G.phase === 'evade');
+            const seeker = G.role === 'seeker' && G.phase === 'seek';
+            const set = (id, show, label, sub, on) => {
+                const b = document.getElementById(id);
+                if (!b) return;
+                b.classList.toggle('hide', !show);
+                if (show && label) b.innerHTML = '<b>' + label + '</b><span>' + sub + '</span>';
+                b.classList.toggle('on', !!on);
+            };
+            if (hider) {
+                const prep = G.phase === 'prep';
+                set('tbA', true, '&#9678;', 'Spoid');
+                set('tbB', prep, '&#9998;', 'Paint', G.paintOpen);
+                set('tbC', prep, '&#9782;', 'Pose', G.poseOpen);
+                set('tbD', true, '&#8681;', 'Crouch', G.hs && G.hs.crouch);
+                set('tbE', true, '&#9724;', 'Wall', G.hs && !!G.hs.stuck);
+                set('tbF', !prep, '&#9835;', 'Taunt');
+                const g = document.getElementById('tbG');
+                g.classList.toggle('hide', !prep);
+                g.textContent = G.mode === 'local' ? 'Done — pass it on' : 'Lock in';
+            } else if (seeker) {
+                set('tbA', true, '&#9678;', 'Ping');
+                set('tbB', true, '&#9673;', 'X-ray', G.seeThrough);
+                set('tbC', false); set('tbD', false); set('tbE', false); set('tbF', false);
+                const g = document.getElementById('tbG'); g.classList.add('hide');
+            } else {
+                ['tbA', 'tbB', 'tbC', 'tbD', 'tbE', 'tbF', 'tbG'].forEach(id => {
+                    const b = document.getElementById(id); if (b) b.classList.add('hide');
+                });
+            }
+        }
+        function tpBind() {
+            const tap = (id, fn) => {
+                const b = document.getElementById(id); if (!b) return;
+                b.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); actx(); fn(); tpSyncPad(); });
+            };
+            tap('tbA', () => { if (G.role === 'seeker') firePulse(); else pick3D(); });
+            tap('tbB', () => { if (G.role === 'seeker') { G.seeThrough = !G.seeThrough; } else togglePaint(); });
+            tap('tbC', () => togglePose());
+            tap('tbD', () => toggleCrouch());
+            tap('tbE', () => toggleStick());
+            tap('tbF', () => doTaunt());
+            tap('tbG', () => {
+                if (G.phase !== 'prep') return;
+                if (G.mode === 'local') ppLockIn();
+                else if (G.mode === 'online') toast('Locked in — waiting for the seeker', 'good');
+                else beginEvade();
+            });
+        }
+
+        /* portrait is fine until the viewport is too short to fit HUD, world and pad */
+        function checkSquat() {
+            if (!IS_TOUCH) return;
+            const squat = innerHeight < 430 || (innerWidth < innerHeight && innerHeight < 520);
+            document.body.classList.toggle('squat', squat);
+        }
+        addEventListener('resize', checkSquat);
+        addEventListener('orientationchange', () => setTimeout(() => { resize(); checkSquat(); }, 250));
+
+        /* ---- installable: manifest and icon are built here, so the file stays standalone ---- */
+        function buildInstallBits() {
+            try {
+                const c = document.createElement('canvas'); c.width = c.height = 192;
+                const g = c.getContext('2d');
+                g.fillStyle = '#3ec93a'; g.fillRect(0, 0, 192, 192);
+                g.fillStyle = '#12280f';
+                g.save(); g.translate(96, 104); g.scale(2.6, 2.6);
+                if (typeof posePath === 'function') { posePath(g, 22, 'curl'); g.fill(); }
+                g.restore();
+                g.fillStyle = '#ffd63b';
+                g.beginPath(); g.arc(128, 88, 13, 0, 6.2832); g.fill();
+                const icon = c.toDataURL('image/png');
+                const il = document.getElementById('appIcon'); if (il) il.href = icon;
+                const manifest = {
+                    name: 'Mecha Chameleon', short_name: 'Chameleon',
+                    start_url: '.', scope: '.', display: 'fullscreen',
+                    orientation: 'any', background_color: '#3ec93a', theme_color: '#3ec93a',
+                    icons: [{ src: icon, sizes: '192x192', type: 'image/png', purpose: 'any maskable' }]
+                };
+                const url = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+                const ml = document.getElementById('manifestLink'); if (ml) ml.href = url;
+            } catch (e) { }
+        }
+        function goFullscreen() {
+            if (!IS_TOUCH) return;
+            const el = document.documentElement;
+            try { if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen({ navigationUI: 'hide' }); } catch (e) { }
+            try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => { }); } catch (e) { }
+        }
+
+        tpApply(); tpBind(); buildInstallBits(); checkSquat();
         buildMenu();
     </script>
 </body>
